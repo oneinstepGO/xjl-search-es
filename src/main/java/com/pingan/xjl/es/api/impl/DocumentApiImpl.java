@@ -8,12 +8,14 @@ import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.support.replication.ReplicationResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -31,14 +33,13 @@ public class DocumentApiImpl implements DocumentApi {
     private RestHighLevelClient client;
 
     @Override
-    public boolean saveOrUpdate(EsDocument o) throws IOException {
+    public boolean save(EsDocument o) throws IOException {
         IndexRequest request = new IndexRequest(o.getIndex());
         request.id(o.getId());
         String jsonString = JSON.toJSONString(o);
         request.source(jsonString, XContentType.JSON);
         request.opType(DocWriteRequest.OpType.CREATE);
         IndexResponse indexResponse = client.index(request, RequestOptions.DEFAULT);
-
         String index = indexResponse.getIndex();
         String id = indexResponse.getId();
         if (indexResponse.getResult() == DocWriteResponse.Result.CREATED) {
@@ -92,4 +93,16 @@ public class DocumentApiImpl implements DocumentApi {
         }
         return true;
     }
+
+    @Override
+    public boolean exists(EsDocument o) throws IOException {
+        GetRequest getRequest = new GetRequest(
+                o.getIndex(),
+                o.getId());
+        getRequest.fetchSourceContext(new FetchSourceContext(false));
+        getRequest.storedFields("_none_");
+        boolean exists = client.exists(getRequest, RequestOptions.DEFAULT);
+        return exists;
+    }
+
 }

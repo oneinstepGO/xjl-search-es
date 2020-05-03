@@ -32,11 +32,11 @@ public class DocumentApiTest extends XjlSearchEsApplicationTests{
                 .summary("一个分布式实时搜索和分析引擎")
                 .authors(Arrays.asList("克林顿·戈姆利", "扎卡里·童"))
                 .numReviews(20)
-                .price(25.99)
+                .price(24.99)
                 .publisher("中信出版社")
                 .publishDate(new Date(sdf.parse("2015-02-07").getTime()))
                 .build();
-        Assert.isTrue(documentApi.saveOrUpdate(book));
+        Assert.isTrue(documentApi.save(book));
     }
 
     @Test

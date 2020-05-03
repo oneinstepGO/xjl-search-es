@@ -11,12 +11,12 @@ import java.io.IOException;
 public interface DocumentApi {
 
     /**
-     * 添加或者修改数据
+     * 添加数据
      * @param o 文档数据
      * @return
      * @throws IOException
      */
-    boolean saveOrUpdate(EsDocument o) throws IOException;
+    boolean save(EsDocument o) throws IOException;
 
     /**
      * 删除文档
@@ -25,5 +25,14 @@ public interface DocumentApi {
      * @throws IOException
      */
     boolean delete(EsDocument o) throws IOException;
+
+    /**
+     * 判断文档是否存在
+     * @param o
+     * @return
+     */
+    boolean exists(EsDocument o) throws IOException;
+
+
 
 }
