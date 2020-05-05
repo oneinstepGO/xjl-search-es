@@ -1,6 +1,7 @@
 package com.pingan.xjl.es.api;
 
 import com.pingan.xjl.es.entity.EsDocument;
+import org.elasticsearch.index.query.QueryBuilder;
 
 import java.io.IOException;
 
@@ -21,17 +22,32 @@ public interface DocumentApi {
     /**
      * 删除文档
      * @param o
+     * @param queryBuilder
      * @return
      * @throws IOException
      */
-    boolean delete(EsDocument o) throws IOException;
+    boolean delete(EsDocument o, QueryBuilder queryBuilder) throws IOException;
 
     /**
      * 判断文档是否存在
      * @param o
      * @return
+     * @throws IOException
      */
     boolean exists(EsDocument o) throws IOException;
+
+    /**
+     * 通过id更新 或者插入新文档
+     * 修改单个
+     *
+     * @param o
+     * @return
+     * @throws IOException
+     */
+    boolean upsert(EsDocument o) throws IOException;
+
+
+
 
 
 

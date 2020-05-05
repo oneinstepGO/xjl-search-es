@@ -2,6 +2,7 @@ package com.pingan.xjl.es;
 
 import com.pingan.xjl.es.api.DocumentApi;
 import com.pingan.xjl.es.entity.Book;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -25,7 +26,7 @@ public class DocumentApiTest extends XjlSearchEsApplicationTests{
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
 
     @Test
-    public void testSaveOrUpdate() throws IOException, ParseException {
+    public void testSave() throws IOException, ParseException {
         Book book = Book.builder()
                 .bookId("1001")
                 .title("Elasticsearch: 权威指南")
@@ -40,7 +41,35 @@ public class DocumentApiTest extends XjlSearchEsApplicationTests{
     }
 
     @Test
-    public void testDelete() throws IOException {
-        Assert.isTrue(documentApi.delete(Book.builder().bookId("1001").build()));
+    public void testUpsert() throws IOException {
+        Assert.isTrue(documentApi.upsert(Book.builder().bookId("1001").price(26.90).build()));
     }
+
+    @Test
+    public void testUpsert2() throws IOException, ParseException {
+        Assert.isTrue(documentApi.upsert(Book.builder()
+                .bookId("1002")
+                .title("标题文字:如何查询，组织和操作")
+                .authors(Arrays.asList("grant ingersoll", "thomas morton", "drew farris"))
+                .price(15.23)
+                .summary("使用诸如全文搜索,专有名称识别,聚合,标记,信息提取等方法来组织文本和摘要")
+                .publisher("机械工程出版社")
+                .numReviews(12)
+                .publishDate(new Date(sdf.parse("2013-01-24").getTime()))
+                .build()));
+    }
+
+    @Test
+    public void testDeleteByQuery() throws IOException {
+        Assert.isTrue(documentApi.delete(Book.builder().build(),QueryBuilders.termQuery("title","指南")));
+    }
+
+    @Test
+    public void testDeleteByQuery1() throws IOException {
+        Assert.isTrue(documentApi.delete(Book.builder().build(), QueryBuilders.idsQuery().addIds("1001","1002")));
+    }
+
+
+
+
 }

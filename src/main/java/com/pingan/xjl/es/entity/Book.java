@@ -18,7 +18,7 @@ import static com.pingan.xjl.es.constant.EsConstants.BOOK_INDEX;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Book implements EsDocument{
+public class Book implements EsDocument {
 
     private String bookId;
 
@@ -45,4 +45,5 @@ public class Book implements EsDocument{
     public String getIndex() {
         return BOOK_INDEX;
     }
+
 }
