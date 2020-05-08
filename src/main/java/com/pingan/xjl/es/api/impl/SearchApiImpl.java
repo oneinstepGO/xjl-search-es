@@ -2,8 +2,8 @@ package com.pingan.xjl.es.api.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.Page;
 import com.pingan.xjl.es.api.SearchApi;
+import com.pingan.xjl.es.dto.AggregationPage;
 import com.pingan.xjl.es.entity.EsDocument;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.util.Asserts;
@@ -15,6 +15,8 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.Aggregation;
+import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.springframework.stereotype.Service;
@@ -35,10 +37,10 @@ public class SearchApiImpl implements SearchApi {
     private RestHighLevelClient client;
 
     @Override
-    public Page<EsDocument> searchForPage(String index,Class<? extends EsDocument> clazz,SearchSourceBuilder  sourceBuilder) throws IOException {
+    public AggregationPage<EsDocument> searchForAggregationPage(String index,Class<? extends EsDocument> clazz,SearchSourceBuilder  sourceBuilder) throws IOException {
         Asserts.check(sourceBuilder.from() != -1,"分页参数【pageNo】未指定！");
         Asserts.check(sourceBuilder.size() != -1,"分页参数【pageSize】未指定！");
-        Page<EsDocument> pages = new Page<>();
+        AggregationPage<EsDocument> pages = new AggregationPage<>();
         SearchRequest searchRequest = new SearchRequest();
         searchRequest.indices(index);
         searchRequest.source(sourceBuilder);
@@ -66,13 +68,18 @@ public class SearchApiImpl implements SearchApi {
             }
 
             EsDocument esDocument = JSONObject.parseObject(JSON.toJSONString(sourceAsMap), clazz);
-            pages.add(esDocument);
+            pages.getResults().add(esDocument);
         }
+        Aggregations aggregations = searchResponse.getAggregations();
+        Map<String, Aggregation> aggregationMap = aggregations.getAsMap();
+        pages.setAggregationMap(aggregationMap);
+
         pages.setTotal(hits.getTotalHits().value);
         pages.setPageNum(sourceBuilder.from());
         pages.setPageSize(sourceBuilder.size());
         log.info("查询出文档为 分页对象为 pages: {} ",JSON.toJSONString(pages));
         return pages;
     }
+
 
 }

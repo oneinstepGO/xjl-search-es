@@ -7,7 +7,7 @@ package com.pingan.xjl.es.entity;
 public interface  EsDocument {
 
     /**
-     * 获取文档id
+     * 获取文档 id
      * @return
      */
     String getId();

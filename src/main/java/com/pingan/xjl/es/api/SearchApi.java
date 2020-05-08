@@ -1,6 +1,6 @@
 package com.pingan.xjl.es.api;
 
-import com.github.pagehelper.Page;
+import com.pingan.xjl.es.dto.AggregationPage;
 import com.pingan.xjl.es.entity.EsDocument;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
@@ -15,12 +15,15 @@ public interface SearchApi {
 
     /**
      * 分页查询
-     * @param index
+     * 聚合搜索
+     * @param index 索引名称
      * @param sourceBuilder
-     * @param clazz
+     * @param clazz 文档对应实体的class
      * @return
      * @throws IOException
      */
-    Page<EsDocument> searchForPage(String index,Class<? extends EsDocument> clazz,SearchSourceBuilder  sourceBuilder) throws IOException;
+    AggregationPage<EsDocument> searchForAggregationPage(String index,Class<? extends EsDocument> clazz,SearchSourceBuilder  sourceBuilder) throws IOException;
+
+
 
 }

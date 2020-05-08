@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: es-search
+  profiles:
+    active: dev

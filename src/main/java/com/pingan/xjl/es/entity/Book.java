@@ -20,20 +20,54 @@ import static com.pingan.xjl.es.constant.EsConstants.BOOK_INDEX;
 @Builder
 public class Book implements EsDocument {
 
+    /**
+     * id
+     */
     private String bookId;
 
+    /**
+     * 标题
+     */
     private String title;
 
+    /**
+     * 作者
+     */
     private List<String> authors;
 
+    /**
+     * 简介
+     */
     private String summary;
 
+    /**
+     * 价格
+     */
     private Double price;
 
+    /**
+     * 书本种类 用于聚合
+     */
+    private Long categoryId;
+
+    /**
+     * 出版日期
+     */
     private Date publishDate;
 
+    /**
+     * 阅读量
+     */
     private Integer numReviews;
 
+    /**
+     * 出版社id  用于聚合
+     */
+    private String publishId;
+
+    /**
+     * 出版社  用于聚合
+     */
     private String publisher;
 
     @Override

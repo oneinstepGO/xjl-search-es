@@ -21,6 +21,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.elasticsearch.index.reindex.ScrollableHitSource;
@@ -118,6 +119,11 @@ public class DocumentApiImpl implements DocumentApi {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean deleteByIds(EsDocument o, List<String> ids) throws IOException {
+        return this.delete(o, QueryBuilders.idsQuery().addIds(ids.toArray(new String[0])));
     }
 
     @Override

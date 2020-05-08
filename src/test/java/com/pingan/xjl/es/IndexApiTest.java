@@ -10,6 +10,7 @@ import java.io.IOException;
 import static com.pingan.xjl.es.constant.EsConstants.BOOK_INDEX;
 
 /**
+ * 测试索引api
  * @author Aaron
  * @date 2020/5/3 1:20
  */

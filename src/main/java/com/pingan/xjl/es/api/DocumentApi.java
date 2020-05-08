@@ -4,8 +4,10 @@ import com.pingan.xjl.es.entity.EsDocument;
 import org.elasticsearch.index.query.QueryBuilder;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
+ * 文档 api
  * @author Aaron
  * @date 2020/4/29 22:38
  */
@@ -27,6 +29,15 @@ public interface DocumentApi {
      * @throws IOException
      */
     boolean delete(EsDocument o, QueryBuilder queryBuilder) throws IOException;
+
+    /**
+     * 通过ids 批量删除
+     * @param o
+     * @param ids
+     * @return
+     * @throws IOException
+     */
+    boolean deleteByIds(EsDocument o, List<String> ids) throws IOException;
 
     /**
      * 判断文档是否存在

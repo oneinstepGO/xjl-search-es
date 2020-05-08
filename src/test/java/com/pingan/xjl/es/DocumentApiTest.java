@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
+ * 测试文档 api
  * @author Aaron
  * @date 2020/5/3 2:28
  */
@@ -65,8 +66,8 @@ public class DocumentApiTest extends XjlSearchEsApplicationTests{
     }
 
     @Test
-    public void testDeleteByQuery1() throws IOException {
-        Assert.isTrue(documentApi.delete(Book.builder().build(), QueryBuilders.idsQuery().addIds("1001","1002")));
+    public void testDeleteByIds() throws IOException {
+        Assert.isTrue(documentApi.deleteByIds(Book.builder().build(), Arrays.asList("1001","1002")));
     }
 
 
