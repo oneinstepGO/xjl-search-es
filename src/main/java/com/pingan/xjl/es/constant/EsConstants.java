@@ -15,4 +15,14 @@ public interface EsConstants {
      * 书本索引名称
      */
     public static final String BOOK_INDEX = "book";
+
+    /**
+     * 书本索引名称
+     */
+    public static final String CATEGORY_INDEX = "category";
+
+    /**
+     * 书本索引名称
+     */
+    public static final String PUBLISH_INDEX = "publish";
 }

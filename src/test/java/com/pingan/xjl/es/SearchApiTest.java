@@ -5,10 +5,14 @@ import com.pingan.xjl.es.api.SearchApi;
 import com.pingan.xjl.es.constant.EsConstants;
 import com.pingan.xjl.es.dto.AggregationPage;
 import com.pingan.xjl.es.entity.Book;
+import com.pingan.xjl.es.entity.Category;
 import com.pingan.xjl.es.entity.EsDocument;
+import com.pingan.xjl.es.entity.Publish;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
@@ -18,6 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Aaron
@@ -92,7 +100,65 @@ public class SearchApiTest extends XjlSearchEsApplicationTests{
         // 出版商聚合
         String publishAggName = "publishAgg";
         searchSourceBuilder.aggregation(AggregationBuilders.terms(publishAggName).field("publishId"));
-        searchApi.searchForAggregationPage(EsConstants.BOOK_INDEX, Book.class,searchSourceBuilder);
+        AggregationPage<EsDocument> docs = searchApi.searchForAggregationPage(EsConstants.BOOK_INDEX, Book.class, searchSourceBuilder);
+
+        List<EsDocument> books = docs.getResults();
+        // 解析聚合结果
+        Map<String, Aggregation> aggregations = docs.getAggregationMap();
+        //解析分类聚合
+        List<EsDocument> categories = handleAgg(EsConstants.CATEGORY_INDEX, (StringTerms) aggregations.get(categoryAggName),Category.class);
+        //解析出版商聚合
+        List<EsDocument> publishes = handleAgg(EsConstants.PUBLISH_INDEX , (StringTerms) aggregations.get(publishAggName), Publish.class);
+
+        log.info("the total is {}",JSON.toJSONString(docs.getTotal()));
+        log.info("the pageNum is {}",JSON.toJSONString(docs.getPageNum()));
+        log.info("the pageSize is {}",JSON.toJSONString(docs.getPageSize()));
+
+        log.info("the books is {}",JSON.toJSONString(books));
+        log.info("the aggs is {}",JSON.toJSONString(aggregations));
+        log.info("the categories is {}",JSON.toJSONString(categories));
+        log.info("the publishes is {}",JSON.toJSONString(publishes));
+
+        Assert.isTrue(docs.getTotal() != 0
+                && docs.getPageNum() == 0
+                && docs.getPageSize() == 15
+                && !books.isEmpty()
+                && !aggregations.isEmpty()
+                && !categories.isEmpty()
+                && !publishes.isEmpty());
+
+
     }
+
+    @Test
+    public void testqueryByIds() throws IOException {
+        List<EsDocument> esDocuments = searchApi.queryByIds(EsConstants.BOOK_INDEX, Arrays.asList("1001", "1002"), Book.class);
+        Assert.isTrue(esDocuments.size() == 2);
+        log.info("the result is {}",JSON.toJSONString(esDocuments));
+    }
+
+    /**
+     * 处理聚合数据
+     * @param terms
+     * @param clazz
+     * @return
+     */
+    private List<EsDocument> handleAgg(String index, StringTerms terms,Class<? extends EsDocument> clazz) {
+        try {
+            //获取id
+            List<String> ids = terms.getBuckets()
+                    .stream()
+                    .map(b -> b.getKeyAsString())
+                    .collect(Collectors.toList());
+            //根据ID查询分类
+            List<EsDocument> results = searchApi.queryByIds(index, ids, clazz);
+            return results;
+        } catch (Exception e) {
+            log.error("查询信息失败", e);
+            return null;
+        }
+    }
+
+
 
 }

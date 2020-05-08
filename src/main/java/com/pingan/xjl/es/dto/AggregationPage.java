@@ -1,5 +1,6 @@
 package com.pingan.xjl.es.dto;
 
+import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +26,7 @@ public class AggregationPage<T> {
 
     private Long total;
 
-    private Map<String, Aggregation> aggregationMap;
+    private Map<String, Aggregation> aggregationMap ;
 
-    private List<T> results;
+    private List<T> results = Lists.newArrayList();
 }

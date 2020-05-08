@@ -5,6 +5,7 @@ import com.pingan.xjl.es.entity.EsDocument;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 搜索接口
@@ -25,5 +26,10 @@ public interface SearchApi {
     AggregationPage<EsDocument> searchForAggregationPage(String index,Class<? extends EsDocument> clazz,SearchSourceBuilder  sourceBuilder) throws IOException;
 
 
-
+    /**
+     * 根据ids 批量搜索
+     * @param ids
+     * @return
+     */
+    List<EsDocument> queryByIds(String index,List<String> ids,Class<? extends EsDocument> clazz) throws IOException;
 }

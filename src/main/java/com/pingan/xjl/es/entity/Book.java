@@ -48,7 +48,7 @@ public class Book implements EsDocument {
     /**
      * 书本种类 用于聚合
      */
-    private Long categoryId;
+    private String categoryId;
 
     /**
      * 出版日期
@@ -72,7 +72,7 @@ public class Book implements EsDocument {
 
     @Override
     public String getId() {
-        return this.bookId;
+        return bookId;
     }
 
     @Override
