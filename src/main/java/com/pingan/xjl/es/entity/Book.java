@@ -46,7 +46,7 @@ public class Book implements EsDocument {
     private Double price;
 
     /**
-     * 书本种类 用于聚合
+     * 书本种类id 用于聚合
      */
     private String categoryId;
 
@@ -65,10 +65,6 @@ public class Book implements EsDocument {
      */
     private String publishId;
 
-    /**
-     * 出版社  用于聚合
-     */
-    private String publisher;
 
     @Override
     public String getId() {

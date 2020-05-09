@@ -1,0 +1,11 @@
+	{ "index": { "_id":"3001" }}
+    { 
+      "publishId": "3001",
+      "publisher": "中信出版社"
+    }
+
+    { "index": { "_id": "3002" }}
+    { 
+      "publishId": "3002",
+      "publisher": "机械工程出版社"
+    }

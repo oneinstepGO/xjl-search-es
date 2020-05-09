@@ -6,8 +6,9 @@
       "publishDate" : "2015-02-07",
       "numReviews": 20,
       "bookId": "1001",
-      "price": 25.99
-      "publisher": "中信出版社"
+      "price": 25.99,
+      "categoryId": "2001",
+      "publishId": "3001"
     }
 
     { "index": { "_id": "1002" }}
@@ -18,8 +19,9 @@
       "publishDate" : "2013-01-24",
       "numReviews": 12,
       "bookId": "1002",
-      "price": 15.23
-      "publisher": "机械工程出版社" }
+      "categoryId": "2001",
+      "price": 15.23,
+      "publishId": "3002" }
 
     { "index": { "_id": "1003" }}
     { 
@@ -29,8 +31,9 @@
       "publishDate" : "2015-12-03",
       "numReviews": 18,
       "bookId": "1001",
-      "price": 55.98
-      "publisher": "机械工程出版社" }
+      "categoryId": "2001",
+      "price": 55.98,
+      "publishId": "3002" }
 
     { "index": { "_id": "1004" }}
     {
@@ -40,6 +43,7 @@
       "publishDate" : "2014-04-05",
       "numReviews": 23,
       "bookId": "1004",
-      "price": 7.66
-      "publisher": "机械工程出版社"
+      "categoryId": "2002",
+      "price": 7.66,
+      "publishId": "3001"
     }

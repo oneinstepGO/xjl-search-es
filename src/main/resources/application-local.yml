@@ -1,0 +1,3 @@
+search:
+  es:
+    address: http://localhost:9200

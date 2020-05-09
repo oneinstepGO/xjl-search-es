@@ -1,0 +1,18 @@
+	{ "index": { "_id":"2001" }}
+    { 
+      "categoryId": "2001",
+      "categoryName" : "技术书籍"
+    }
+
+    { "index": { "_id": "2002" }}
+    {
+      "categoryId": "2002",
+      "categoryName" : "小说文学"
+    }
+
+    { "index": { "_id": "2003" }}
+    {
+      "categoryId": "2003",
+      "categoryName" : "旅游指南"
+    }
+

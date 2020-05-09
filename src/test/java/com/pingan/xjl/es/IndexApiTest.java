@@ -8,6 +8,8 @@ import org.springframework.util.Assert;
 import java.io.IOException;
 
 import static com.pingan.xjl.es.constant.EsConstants.BOOK_INDEX;
+import static com.pingan.xjl.es.constant.EsConstants.CATEGORY_INDEX;
+import static com.pingan.xjl.es.constant.EsConstants.PUBLISH_INDEX;
 
 /**
  * 测试索引api
@@ -21,23 +23,28 @@ public class IndexApiTest extends XjlSearchEsApplicationTests {
     private IndexApi indexApi;
 
     /**
-     * 创建索引
+     * 创建book索引
      * @throws IOException
      */
     @Test
-    public void testCreateIndex() throws IOException {
+    public void buildCreateBookIndex() throws IOException {
 
         String mappingJsonStr =   "{\n" +
                 "      \"properties\":{\n" +
                 "        \"bookId\":{\n" +
-                "          \"type\":\"text\",\n" +
-                "          \"analyzer\": \"keyword\"\n" +
+                "          \"type\":\"keyword\"\n" +
                 "        },\n" +
                 "        \"title\":{\n" +
                 "          \"type\":\"text\",\n" +
                 "          \"analyzer\": \"ik_max_word\"\n" +
                 "        },\n" +
                 "         \"author\":{\n" +
+                "          \"type\":\"keyword\"\n" +
+                "        },\n" +
+                "         \"publishId\":{\n" +
+                "          \"type\":\"keyword\"\n" +
+                "        },\n" +
+                "         \"categoryId\":{\n" +
                 "          \"type\":\"keyword\"\n" +
                 "        },\n" +
                 "          \"summary\":{\n" +
@@ -52,15 +59,51 @@ public class IndexApiTest extends XjlSearchEsApplicationTests {
                 "        },\n" +
                 "        \"numReviews\":{\n" +
                 "          \"type\":\"integer\"\n" +
-                "        },\n" +
-                "          \"publisher\":{\n" +
-                "          \"type\":\"text\",\n" +
-                "          \"analyzer\": \"ik_max_word\"\n" +
                 "        }\n" +
                 "      }\n" +
                 "    }";
 
         Assert.isTrue(indexApi.create(BOOK_INDEX,1,1,mappingJsonStr));
+    }
+
+    /**
+     * 创建CategoryIndex
+     */
+    @Test
+    public void buildCategoryIndex() throws IOException {
+        String mappingJsonStr =   "{\n" +
+                "      \"properties\":{\n" +
+                "         \"categoryId\":{\n" +
+                "          \"type\":\"keyword\"\n" +
+                "        },\n" +
+                "          \"categoryName\":{\n" +
+                "          \"type\":\"text\",\n" +
+                "          \"analyzer\": \"ik_max_word\"\n" +
+                "        }\n"  +
+                "      }\n" +
+                "    }";
+
+        Assert.isTrue(indexApi.create(CATEGORY_INDEX,1,1,mappingJsonStr));
+    }
+
+    /**
+     * 创建PublishIndex
+     */
+    @Test
+    public void buildPublishIndex() throws IOException {
+        String mappingJsonStr =   "{\n" +
+                "      \"properties\":{\n" +
+                "         \"publishId\":{\n" +
+                "          \"type\":\"keyword\"\n" +
+                "        },\n" +
+                "          \"publisher\":{\n" +
+                "          \"type\":\"text\",\n" +
+                "          \"analyzer\": \"ik_max_word\"\n" +
+                "        }\n"  +
+                "      }\n" +
+                "    }";
+
+        Assert.isTrue(indexApi.create(PUBLISH_INDEX,1,1,mappingJsonStr));
     }
 
     /**
