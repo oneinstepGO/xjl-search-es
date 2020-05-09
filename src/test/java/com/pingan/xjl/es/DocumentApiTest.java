@@ -44,19 +44,6 @@ public class DocumentApiTest extends XjlSearchEsApplicationTests{
         Assert.isTrue(documentApi.save(book));
 
         Book book1 = Book.builder()
-                .bookId("1001")
-                .title("Elasticsearch: 权威指南")
-                .summary("一个分布式实时搜索和分析引擎")
-                .authors(Arrays.asList("克林顿·戈姆利", "扎卡里·童"))
-                .numReviews(20)
-                .price(24.99)
-                .categoryId("2001")
-                .publishId("3002")
-                .publishDate(new Date(sdf.parse("2013-01-24").getTime()))
-                .build();
-        Assert.isTrue(documentApi.save(book1));
-
-        Book book2 = Book.builder()
                 .bookId("1002")
                 .title("标题文字:如何查询，组织和操作")
                 .summary("使用诸如全文搜索,专有名称识别,聚合,标记,信息提取等方法来组织文本和摘要")
@@ -65,12 +52,25 @@ public class DocumentApiTest extends XjlSearchEsApplicationTests{
                 .price(15.23)
                 .categoryId("2001")
                 .publishId("3002")
+                .publishDate(new Date(sdf.parse("2013-01-24").getTime()))
+                .build();
+        Assert.isTrue(documentApi.save(book1));
+
+        Book book2 = Book.builder()
+                .bookId("1003")
+                .title("Elasticsearch 实战")
+                .summary("使用Elasticsearch构建可扩展的搜索应用,而无需执行复杂的低级编程或了解高级数据科学算法")
+                .authors(Arrays.asList("radu gheorge", "matthew lee hinman", "roy russo"))
+                .numReviews(18)
+                .price(55.98)
+                .categoryId("2001")
+                .publishId("3002")
                 .publishDate(new Date(sdf.parse("2015-12-03").getTime()))
                 .build();
         Assert.isTrue(documentApi.save(book2));
 
         Book book3 = Book.builder()
-                .bookId("1003")
+                .bookId("1004")
                 .title("Solr in Action")
                 .summary("使用 Apache Solr实现可扩展的搜索引擎的综合指南")
                 .authors(Arrays.asList("trey grainger", "timothy potter"))

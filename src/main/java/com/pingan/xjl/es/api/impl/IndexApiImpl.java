@@ -38,7 +38,7 @@ public class IndexApiImpl implements IndexApi {
         CreateIndexResponse indexResponse = client.indices().create(request, RequestOptions.DEFAULT);
         boolean acknowledged = indexResponse.isAcknowledged();
         boolean shardsAcknowledged = indexResponse.isShardsAcknowledged();
-        log.info("创建索引：{}>>>>>>>>>>>>>acknowledged:{},shardsAcknowledged:{}",acknowledged&&shardsAcknowledged ? "成功":"失败",acknowledged,shardsAcknowledged);
+        log.info("创建索引{}：{}>>>>>>>>>>>>>acknowledged:{},shardsAcknowledged:{}",name, acknowledged&&shardsAcknowledged ? "成功":"失败",acknowledged,shardsAcknowledged);
         return acknowledged;
     }
 
