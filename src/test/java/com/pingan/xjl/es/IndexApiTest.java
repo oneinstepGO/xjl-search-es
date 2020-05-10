@@ -112,5 +112,7 @@ public class IndexApiTest extends XjlSearchEsApplicationTests {
     @Test
     public void testDelete() {
         Assert.isTrue(indexApi.delete(BOOK_INDEX));
+        Assert.isTrue(indexApi.delete(CATEGORY_INDEX));
+        Assert.isTrue(indexApi.delete(PUBLISH_INDEX));
     }
 }

@@ -10,9 +10,13 @@ import org.apache.http.util.Asserts;
 import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.bulk.BulkItemResponse;
+import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.action.support.replication.ReplicationResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
@@ -55,10 +59,7 @@ public class DocumentApiImpl implements DocumentApi {
         IndexRequest request = new IndexRequest(o.getIndex());
         request.id(o.getId());
 
-
         String jsonString = checkAndParse(o);
-
-
 
         request.source(jsonString, XContentType.JSON);
         request.opType(DocWriteRequest.OpType.CREATE);
@@ -184,5 +185,98 @@ public class DocumentApiImpl implements DocumentApi {
     private void checkIdAndIndex(EsDocument o) {
         Asserts.notEmpty(o.getId(),"id 不能为空");
         Asserts.notEmpty(o.getIndex(),"index 不能为空");
+    }
+
+    @Override
+    public boolean bulkUpdate(List<EsDocument> docs) throws IOException {
+        BulkRequest request = new BulkRequest();
+        docs.forEach(doc -> {
+            String jsonString = JSON.toJSONString(doc);
+            request.add(new UpdateRequest(doc.getIndex(),doc.getId()).doc(jsonString,XContentType.JSON));
+        });
+        // 设置超时2分钟
+        request.timeout(TimeValue.timeValueMinutes(2));
+
+        BulkResponse bulkResponse = client.bulk(request, RequestOptions.DEFAULT);
+
+        for (BulkItemResponse bulkItemResponse : bulkResponse) {
+
+            if (bulkItemResponse.isFailed()) {
+                BulkItemResponse.Failure failure =
+                        bulkItemResponse.getFailure();
+                log.info("批量操作失败,原因是:{}",JSON.toJSONString(failure));
+            }
+
+            DocWriteResponse itemResponse = bulkItemResponse.getResponse();
+            switch (bulkItemResponse.getOpType()) {
+                case INDEX:
+                case CREATE:
+                    IndexResponse indexResponse = (IndexResponse) itemResponse;
+                    log.info("进行索引操作！！");
+                    break;
+                case UPDATE:
+                    UpdateResponse updateResponse = (UpdateResponse) itemResponse;
+                    log.info("进行文档更新操作！！");
+                    break;
+                case DELETE:
+                    DeleteResponse deleteResponse = (DeleteResponse) itemResponse;
+                    log.info("进行文档删除操作！！");
+            }
+        }
+
+        if (!bulkResponse.hasFailures()) {
+            log.info("批量更新全部成功！！！");
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean bulkInsert(List<EsDocument> docs) throws IOException {
+
+        BulkRequest request = new BulkRequest();
+        docs.forEach(doc -> {
+            checkIdAndIndex(doc);
+            String jsonString = JSON.toJSONString(doc);
+            request.add(new IndexRequest(doc.getIndex())
+                    .id(doc.getId())
+                    .source(jsonString,XContentType.JSON).opType(DocWriteRequest.OpType.CREATE));
+        });
+
+        request.setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
+        request.timeout(TimeValue.timeValueMinutes(2));
+        BulkResponse bulkResponse = client.bulk(request, RequestOptions.DEFAULT);
+
+        for (BulkItemResponse bulkItemResponse : bulkResponse) {
+            DocWriteResponse itemResponse = bulkItemResponse.getResponse();
+
+            switch (bulkItemResponse.getOpType()) {
+                case INDEX:
+                case CREATE:
+                    IndexResponse indexResponse = (IndexResponse) itemResponse;
+                    String id = indexResponse.getId();
+                    String index = indexResponse.getIndex();
+//                    log.info("插入数据结果：{}",JSON.toJSONString(indexResponse.getResult().getLowercase()));
+                    if ("created".equalsIgnoreCase(indexResponse.getResult().getLowercase())) {
+                        log.info("插入数据index:{},id:{}成功！",index,id);
+                    } else {
+                        log.info("插入数据index:{},id:{}失败！",index,id);
+                    }
+                    break;
+                case UPDATE:
+                    UpdateResponse updateResponse = (UpdateResponse) itemResponse;
+                    break;
+                case DELETE:
+                    DeleteResponse deleteResponse = (DeleteResponse) itemResponse;
+            }
+        }
+
+        if (!bulkResponse.hasFailures()) {
+            log.info("批量插入成功！！！共插入{}条数据！",JSON.toJSONString(docs.size()));
+            return true;
+        }
+
+        return false;
     }
 }

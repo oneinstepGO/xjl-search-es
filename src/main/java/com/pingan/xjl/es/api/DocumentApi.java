@@ -58,8 +58,21 @@ public interface DocumentApi {
     boolean upsert(EsDocument o) throws IOException;
 
 
+    /**
+     * 批量修改操作
+     * @param docs
+     * @return
+     * @throws IOException
+     */
+    boolean bulkUpdate(List<EsDocument> docs) throws IOException;
 
-
+    /**
+     * 批量添加
+     * @param docs
+     * @return
+     * @throws IOException
+     */
+    boolean bulkInsert(List<EsDocument> docs) throws IOException;
 
 
 }
