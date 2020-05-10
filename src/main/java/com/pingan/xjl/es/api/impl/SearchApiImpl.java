@@ -79,7 +79,7 @@ public class SearchApiImpl implements SearchApi{
         }
 
         pages.setTotal(hits.getTotalHits().value);
-        pages.setPageNum(sourceBuilder.from());
+        pages.setPageNum(sourceBuilder.from()+1);
         pages.setPageSize(sourceBuilder.size());
         log.info("查询出文档为 分页对象为 pages: {} ",JSON.toJSONString(pages));
         return pages;

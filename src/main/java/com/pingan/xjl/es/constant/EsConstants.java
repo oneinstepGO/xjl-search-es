@@ -11,18 +11,22 @@ public interface EsConstants {
 
     public static final String ID = "id";
 
+    public static final String CLAZZ = "class";
+
+    public static final String SEARCH_BUILDER = "searchBuilder";
+
     /**
      * 书本索引名称
      */
     public static final String BOOK_INDEX = "book_index";
 
     /**
-     * 书本索引名称
+     * 种类索引名称
      */
     public static final String CATEGORY_INDEX = "category_index";
 
     /**
-     * 书本索引名称
+     * 出版商索引名称
      */
     public static final String PUBLISH_INDEX = "publish_index";
 }
