@@ -17,6 +17,9 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
+import org.elasticsearch.search.suggest.SuggestBuilder;
+import org.elasticsearch.search.suggest.SuggestBuilders;
+import org.elasticsearch.search.suggest.SuggestionBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -158,6 +161,36 @@ public class SearchApiTest extends XjlSearchEsApplicationTests{
             return null;
         }
     }
+
+    /**
+     *
+     */
+    @Test
+    public void testSuggestion() throws IOException {
+        String keyword = "指南";
+
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+
+        // Suggestion builders need to be added to the top level SuggestBuilder,
+        // which itself can be set on the SearchSourceBuilder.
+        SuggestionBuilder termSuggestionBuilder =
+                SuggestBuilders.phraseSuggestion("title").text("指南");
+        SuggestBuilder suggestBuilder = new SuggestBuilder();
+        suggestBuilder.addSuggestion("suggest_title", termSuggestionBuilder);
+        searchSourceBuilder.suggest(suggestBuilder);
+
+        searchSourceBuilder
+                // 分页
+                .from(0).size(15)
+                // 排序
+                .sort(SortBuilders.fieldSort("publishDate").order(SortOrder.DESC))
+                // 过滤
+                .query(QueryBuilders.matchPhraseQuery("title",keyword));
+        AggregationPage<EsDocument> page = searchApi.searchForAggregationPage(EsConstants.BOOK_INDEX, Book.class, searchSourceBuilder);
+
+
+    }
+
 
 
 

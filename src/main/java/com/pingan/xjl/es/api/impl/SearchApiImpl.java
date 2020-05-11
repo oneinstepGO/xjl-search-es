@@ -20,6 +20,8 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
+import org.elasticsearch.search.suggest.Suggest;
+import org.elasticsearch.search.suggest.phrase.PhraseSuggestion;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -42,6 +44,7 @@ public class SearchApiImpl implements SearchApi{
     public AggregationPage<EsDocument> searchForAggregationPage(String index,Class<? extends EsDocument> clazz,SearchSourceBuilder  sourceBuilder) throws IOException {
         Asserts.check(sourceBuilder.from() != -1,"分页参数【pageNo】未指定！");
         Asserts.check(sourceBuilder.size() != -1,"分页参数【pageSize】未指定！");
+        log.info("搜索参数builder为：{}",sourceBuilder.toString());
         AggregationPage<EsDocument> pages = new AggregationPage<>();
         SearchRequest searchRequest = new SearchRequest();
         searchRequest.indices(index);
@@ -54,6 +57,19 @@ public class SearchApiImpl implements SearchApi{
             // failures should be handled here
         }
         SearchHits hits = searchResponse.getHits();
+
+        // 处理搜索建议
+        Suggest suggest = searchResponse.getSuggest();
+        log.info("搜索建议为：{}",suggest.toString());
+        PhraseSuggestion termSuggestion = suggest.getSuggestion("suggest_title");
+        for (PhraseSuggestion.Entry entry : termSuggestion.getEntries()) {
+            for (PhraseSuggestion.Entry.Option option : entry) {
+                String suggestText = option.getText().string();
+                log.info("搜索词建议为： {}",suggestText);
+            }
+        }
+
+
         for (SearchHit hit : hits) {
 
             Map<String, Object> sourceAsMap = hit.getSourceAsMap();
