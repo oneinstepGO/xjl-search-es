@@ -133,8 +133,8 @@ public class DocumentApiTest extends XjlSearchEsApplicationTests{
      */
     @Test
     public void testBulkUpdate() throws IOException {
-        Book book1 = Book.builder().bookId("1001").price(8.88).build();
-        Book book2 = Book.builder().bookId("1002").price(9.99).build();
+        Book book1 = Book.builder().bookId("1001").price(8.87).build();
+        Book book2 = Book.builder().bookId("1002").price(9.98).build();
         List<EsDocument> bookList = Arrays.asList(book1,book2);
         documentApi.bulkUpdate(bookList);
     }
@@ -195,6 +195,8 @@ public class DocumentApiTest extends XjlSearchEsApplicationTests{
         List<EsDocument> bookList = Arrays.asList(book,book1,book2,book3);
         Assert.isTrue(documentApi.bulkInsert(bookList));
     }
+
+
 
 
 

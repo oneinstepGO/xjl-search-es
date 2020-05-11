@@ -196,45 +196,17 @@ public class DocumentApiImpl implements DocumentApi {
         });
         // 设置超时2分钟
         request.timeout(TimeValue.timeValueMinutes(2));
-
         BulkResponse bulkResponse = client.bulk(request, RequestOptions.DEFAULT);
-
-        for (BulkItemResponse bulkItemResponse : bulkResponse) {
-
-            if (bulkItemResponse.isFailed()) {
-                BulkItemResponse.Failure failure =
-                        bulkItemResponse.getFailure();
-                log.info("批量操作失败,原因是:{}",JSON.toJSONString(failure));
-            }
-
-            DocWriteResponse itemResponse = bulkItemResponse.getResponse();
-            switch (bulkItemResponse.getOpType()) {
-                case INDEX:
-                case CREATE:
-                    IndexResponse indexResponse = (IndexResponse) itemResponse;
-                    log.info("进行索引操作！！");
-                    break;
-                case UPDATE:
-                    UpdateResponse updateResponse = (UpdateResponse) itemResponse;
-                    log.info("进行文档更新操作！！");
-                    break;
-                case DELETE:
-                    DeleteResponse deleteResponse = (DeleteResponse) itemResponse;
-                    log.info("进行文档删除操作！！");
-            }
-        }
-
+        handleBulkResponse(bulkResponse);
         if (!bulkResponse.hasFailures()) {
             log.info("批量更新全部成功！！！");
             return true;
         }
-
         return false;
     }
 
     @Override
     public boolean bulkInsert(List<EsDocument> docs) throws IOException {
-
         BulkRequest request = new BulkRequest();
         docs.forEach(doc -> {
             checkIdAndIndex(doc);
@@ -243,13 +215,27 @@ public class DocumentApiImpl implements DocumentApi {
                     .id(doc.getId())
                     .source(jsonString,XContentType.JSON).opType(DocWriteRequest.OpType.CREATE));
         });
-
         request.setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL);
         request.timeout(TimeValue.timeValueMinutes(2));
         BulkResponse bulkResponse = client.bulk(request, RequestOptions.DEFAULT);
+        handleBulkResponse(bulkResponse);
+        if (!bulkResponse.hasFailures()) {
+            log.info("全部数据批量插入成功！！！共插入{}条数据！",JSON.toJSONString(docs.size()));
+            return true;
+        }
+        return false;
+    }
+
+    private void handleBulkResponse(BulkResponse bulkResponse) {
 
         for (BulkItemResponse bulkItemResponse : bulkResponse) {
             DocWriteResponse itemResponse = bulkItemResponse.getResponse();
+
+            if (bulkItemResponse.isFailed()) {
+                BulkItemResponse.Failure failure =
+                        bulkItemResponse.getFailure();
+                log.info("批量操作失败,原因是:{}",JSON.toJSONString(failure));
+            }
 
             switch (bulkItemResponse.getOpType()) {
                 case INDEX:
@@ -257,8 +243,7 @@ public class DocumentApiImpl implements DocumentApi {
                     IndexResponse indexResponse = (IndexResponse) itemResponse;
                     String id = indexResponse.getId();
                     String index = indexResponse.getIndex();
-//                    log.info("插入数据结果：{}",JSON.toJSONString(indexResponse.getResult().getLowercase()));
-                    if ("created".equalsIgnoreCase(indexResponse.getResult().getLowercase())) {
+                    if (DocWriteResponse.Result.CREATED == indexResponse.getResult()) {
                         log.info("插入数据index:{},id:{}成功！",index,id);
                     } else {
                         log.info("插入数据index:{},id:{}失败！",index,id);
@@ -266,17 +251,28 @@ public class DocumentApiImpl implements DocumentApi {
                     break;
                 case UPDATE:
                     UpdateResponse updateResponse = (UpdateResponse) itemResponse;
+                    String id1 = updateResponse.getId();
+                    String index1 = updateResponse.getIndex();
+                    if (DocWriteResponse.Result.UPDATED == updateResponse.getResult()) {
+                        log.info("更新数据index:{},id:{}成功！",index1,id1);
+                    } else {
+                        log.info("更新数据index:{},id:{}失败！",index1,id1);
+                    }
                     break;
                 case DELETE:
                     DeleteResponse deleteResponse = (DeleteResponse) itemResponse;
+                    String id2 = deleteResponse.getId();
+                    String index2 = deleteResponse.getIndex();
+                    if (DocWriteResponse.Result.DELETED == deleteResponse.getResult()) {
+                        log.info("删除数据index:{},id:{}成功！",index2,id2);
+                    } else {
+                        log.info("删除数据index:{},id:{}失败！",index2,id2);
+                    }
+                    break;
+                default:
+                    log.info("未进行任何操作！");
+                    break;
             }
         }
-
-        if (!bulkResponse.hasFailures()) {
-            log.info("批量插入成功！！！共插入{}条数据！",JSON.toJSONString(docs.size()));
-            return true;
-        }
-
-        return false;
     }
 }

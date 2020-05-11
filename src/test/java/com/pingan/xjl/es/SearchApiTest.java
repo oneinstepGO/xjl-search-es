@@ -70,7 +70,7 @@ public class SearchApiTest extends XjlSearchEsApplicationTests{
         log.info("the result is {}",JSON.toJSONString(esDocuments.getResults()));
 
         Assert.isTrue(esDocuments.getTotal() != 0
-                && esDocuments.getPageNum() == 0
+                && esDocuments.getPageNum() == 1
                 && esDocuments.getPageSize() == 3);
     }
 
@@ -120,7 +120,7 @@ public class SearchApiTest extends XjlSearchEsApplicationTests{
         log.info("the publishes is {}",JSON.toJSONString(publishes));
 
         Assert.isTrue(docs.getTotal() != 0
-                && docs.getPageNum() == 0
+                && docs.getPageNum() == 1
                 && docs.getPageSize() == 15
                 && !books.isEmpty()
                 && !aggregations.isEmpty()
@@ -158,6 +158,7 @@ public class SearchApiTest extends XjlSearchEsApplicationTests{
             return null;
         }
     }
+
 
 
 
