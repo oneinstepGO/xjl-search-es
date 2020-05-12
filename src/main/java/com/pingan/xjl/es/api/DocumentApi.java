@@ -64,7 +64,7 @@ public interface DocumentApi {
      * @return
      * @throws IOException
      */
-    boolean bulkUpdate(List<EsDocument> docs) throws IOException;
+    boolean bulkUpdate(List<? extends EsDocument> docs) throws IOException;
 
     /**
      * 批量添加
@@ -72,7 +72,7 @@ public interface DocumentApi {
      * @return
      * @throws IOException
      */
-    boolean bulkInsert(List<EsDocument> docs) throws IOException;
+    boolean bulkInsert(List<? extends EsDocument> docs) throws IOException;
 
 
 }

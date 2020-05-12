@@ -1,10 +1,14 @@
 package com.pingan.xjl.es;
 
+import cn.hutool.core.io.resource.ResourceUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.pingan.xjl.es.api.DocumentApi;
 import com.pingan.xjl.es.entity.Book;
 import com.pingan.xjl.es.entity.Category;
 import com.pingan.xjl.es.entity.EsDocument;
 import com.pingan.xjl.es.entity.Publish;
+import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +17,17 @@ import org.springframework.util.Assert;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * 测试文档 api
  * @author Aaron
  * @date 2020/5/3 2:28
  */
+@Slf4j
 public class DocumentApiTest extends XjlSearchEsApplicationTests{
 
     @Autowired
@@ -194,6 +202,34 @@ public class DocumentApiTest extends XjlSearchEsApplicationTests{
 
         List<EsDocument> bookList = Arrays.asList(book,book1,book2,book3);
         Assert.isTrue(documentApi.bulkInsert(bookList));
+    }
+
+    /**
+     * 测试从json文件导入数据
+     * @throws IOException
+     */
+    @Test
+    public void testImportDataFromJsonFile() throws IOException {
+        // 数据json文件放到 resourcs 目录下
+        String jsonText = ResourceUtil.readUtf8Str("book.json");
+        List<Book> bookList = JSONObject.parseArray(jsonText,Book.class);
+        log.info("the data list is :{}", JSON.toJSONString(bookList));
+        Assert.isTrue(documentApi.bulkInsert(bookList));
+        log.info("----------------------------------");
+
+        // 数据json文件放到 resourcs 目录下
+        String jsonText1 = ResourceUtil.readUtf8Str("category.json");
+        List<Category> categoryList = JSONObject.parseArray(jsonText1,Category.class);
+        log.info("the data list is :{}", JSON.toJSONString(categoryList));
+        Assert.isTrue(documentApi.bulkInsert(categoryList));
+        log.info("----------------------------------");
+
+
+        // 数据json文件放到 resourcs 目录下
+        String jsonText2 = ResourceUtil.readUtf8Str("publish.json");
+        List<Publish> publishList = JSONObject.parseArray(jsonText2,Publish.class);
+        log.info("the data list is :{}", JSON.toJSONString(publishList));
+        Assert.isTrue(documentApi.bulkInsert(publishList));
     }
 
 

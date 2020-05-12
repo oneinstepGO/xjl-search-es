@@ -188,7 +188,7 @@ public class DocumentApiImpl implements DocumentApi {
     }
 
     @Override
-    public boolean bulkUpdate(List<EsDocument> docs) throws IOException {
+    public boolean bulkUpdate(List<? extends EsDocument> docs) throws IOException {
         BulkRequest request = new BulkRequest();
         docs.forEach(doc -> {
             String jsonString = JSON.toJSONString(doc);
@@ -206,7 +206,7 @@ public class DocumentApiImpl implements DocumentApi {
     }
 
     @Override
-    public boolean bulkInsert(List<EsDocument> docs) throws IOException {
+    public boolean bulkInsert(List<? extends EsDocument> docs) throws IOException {
         BulkRequest request = new BulkRequest();
         docs.forEach(doc -> {
             checkIdAndIndex(doc);

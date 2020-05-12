@@ -1,0 +1,17 @@
+[
+    { 
+      "categoryId": "2001",
+      "categoryName" : "技术书籍"
+    },
+
+    {
+      "categoryId": "2002",
+      "categoryName" : "小说文学"
+    },
+
+    {
+      "categoryId": "2003",
+      "categoryName" : "旅游指南"
+    }
+]
+

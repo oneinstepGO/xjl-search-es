@@ -1,0 +1,52 @@
+[
+    { 
+      "title": "Elasticsearch: 权威指南",         
+      "authors": ["克林顿·戈姆利", "扎卡里·童"],
+      "summary" : "一个分布式实时搜索和分析引擎",
+      "publishDate" : "2015-02-07",
+      "numReviews": 20,
+      "bookId": "1001",
+      "price": 25.99,
+      "categoryId": "2001",
+      "publishId": "3001"
+    },
+
+
+    { 
+      "title": "标题文字:如何查询，组织和操作",
+      "authors": ["grant ingersoll", "thomas morton", "drew farris"],
+      "summary" : "使用诸如全文搜索,专有名称识别,聚合,标记,信息提取等方法来组织文本和摘要",              
+      "publishDate" : "2013-01-24",
+      "numReviews": 12,
+      "bookId": "1002",
+      "categoryId": "2001",
+      "price": 15.23,
+      "publishId": "3002"
+    },
+
+
+    { 
+      "title": "Elasticsearch 实战",
+      "authors": ["radu gheorge", "matthew lee hinman", "roy russo"],
+      "summary" : "使用Elasticsearch构建可扩展的搜索应用,而无需执行复杂的低级编程或了解高级数据科学算法",      
+      "publishDate" : "2015-12-03",
+      "numReviews": 18,
+      "bookId": "1003",
+      "categoryId": "2001",
+      "price": 55.98,
+      "publishId": "3002"
+    },
+
+
+    {
+      "title": "Solr in Action",
+      "authors": ["trey grainger", "timothy potter"],               
+      "summary" : "使用 Apache Solr实现可扩展的搜索引擎的综合指南",
+      "publishDate" : "2014-04-05",
+      "numReviews": 23,
+      "bookId": "1004",
+      "categoryId": "2002",
+      "price": 7.66,
+      "publishId": "3001"
+    }
+  ]
