@@ -9,7 +9,7 @@ import com.pingan.xjl.es.entity.Category;
 import com.pingan.xjl.es.entity.EsDocument;
 import com.pingan.xjl.es.entity.Publish;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
@@ -189,8 +189,57 @@ public class SearchApiTest extends XjlSearchEsApplicationTests{
                 .query(QueryBuilders.matchPhraseQuery("title",keyword));
         AggregationPage<EsDocument> page = searchApi.searchForAggregationPage(EsConstants.BOOK_INDEX, Book.class, searchSourceBuilder);
 
+    }
+
+    /**
+     * 测试各种 query
+     */
+    @Test
+    public void testQuery() throws IOException {
+
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        //term查询
+        TermQueryBuilder termQueryBuilder = QueryBuilders.termQuery("title", "指南");
+
+        //range查询
+        RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery("price").gte(20.50).lt(50.80);
+
+        //prefix 查询
+        PrefixQueryBuilder prefixQueryBuilder = QueryBuilders.prefixQuery("summary", "使");
+
+        //wildcard 查询
+        WildcardQueryBuilder wildcardQueryBuilder = QueryBuilders.wildcardQuery("summary", "*法");
+
+        //ids 查询
+        IdsQueryBuilder idsQueryBuilder = QueryBuilders.idsQuery().addIds("1001","1002","1003");
+
+        //fuzzy查询
+        FuzzyQueryBuilder fuzzyQueryBuilder = QueryBuilders.fuzzyQuery("summary", "Elasticseerch");
+
+        //boolean查询
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        boolQueryBuilder.mustNot(QueryBuilders.termQuery("summary","扩展"));
+
+        //多字段查询
+        MultiMatchQueryBuilder multiMatchQueryBuilder = QueryBuilders.multiMatchQuery("指南", "title", "summary");
+
+        //queryString
+        QueryStringQueryBuilder queryStringQueryBuilder = QueryBuilders.queryStringQuery("指南")
+                .analyzer("ik_max_word")
+                .field("title").field("summary");
+
+
+        // 测试时替换这行
+        searchSourceBuilder.query(multiMatchQueryBuilder)
+        .from(0).size(30);
+        searchApi.searchForAggregationPage(EsConstants.BOOK_INDEX,Book.class,searchSourceBuilder);
+
+
 
     }
+
+
+
 
 
 
