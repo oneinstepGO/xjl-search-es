@@ -58,12 +58,13 @@ public class SearchApiTest extends XjlSearchEsApplicationTests{
         highlightSummary.preTags("<span style='color:red'>");
         highlightSummary.postTags("</span>");
         highlightBuilder.field(highlightSummary);
+        highlightBuilder.requireFieldMatch(false);
         searchSourceBuilder.highlighter(highlightBuilder);
 
 
         searchSourceBuilder.sort(SortBuilders.fieldSort("price").order(SortOrder.ASC));
         searchSourceBuilder.from(0).size(3);
-        searchSourceBuilder.query(QueryBuilders.multiMatchQuery("和","title","summary"))
+        searchSourceBuilder.query(QueryBuilders.multiMatchQuery("指南","title","summary"))
         .highlighter(highlightBuilder);
         AggregationPage<EsDocument> esDocuments = searchApi.searchForAggregationPage(EsConstants.BOOK_INDEX, Book.class,searchSourceBuilder);
         log.info("the total is {}",JSON.toJSONString(esDocuments.getTotal()));

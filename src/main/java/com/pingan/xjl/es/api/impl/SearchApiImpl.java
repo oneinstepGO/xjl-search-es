@@ -60,14 +60,17 @@ public class SearchApiImpl implements SearchApi{
 
         // 处理搜索建议
         Suggest suggest = searchResponse.getSuggest();
-        log.info("搜索建议为：{}",suggest.toString());
-        PhraseSuggestion termSuggestion = suggest.getSuggestion("suggest_title");
-        for (PhraseSuggestion.Entry entry : termSuggestion.getEntries()) {
-            for (PhraseSuggestion.Entry.Option option : entry) {
-                String suggestText = option.getText().string();
-                log.info("搜索词建议为： {}",suggestText);
+        if (suggest != null) {
+            log.info("搜索建议为：{}",suggest.toString());
+            PhraseSuggestion termSuggestion = suggest.getSuggestion("suggest_title");
+            for (PhraseSuggestion.Entry entry : termSuggestion.getEntries()) {
+                for (PhraseSuggestion.Entry.Option option : entry) {
+                    String suggestText = option.getText().string();
+                    log.info("搜索词建议为： {}",suggestText);
+                }
             }
         }
+
 
 
         for (SearchHit hit : hits) {
